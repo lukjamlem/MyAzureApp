@@ -3,7 +3,7 @@ import tkinter.messagebox as tkMessageBox
 import sqlite3
 
 root = Tk()
-root.title("Python: Simple Inventory System")
+root.title("Aplikacja do rejestrowania i logowania")
 
 width = 640
 height = 480
@@ -14,14 +14,14 @@ y = (screen_height / 2) - (height / 2)
 root.geometry("%dx%d+%d+%d" % (width, height, x, y))
 root.resizable(0, 0)
 
-# =======================================VARIABLES=====================================
+# zmienne
 USERNAME = StringVar()
 PASSWORD = StringVar()
 FIRSTNAME = StringVar()
 LASTNAME = StringVar()
 
 
-# =======================================METHODS=======================================
+# funkcje
 def Database():
     global conn, cursor
     conn = sqlite3.connect("db_member.db")
@@ -133,14 +133,13 @@ def Login():
 
 LoginForm()
 
-# ========================================MENUBAR WIDGETS==================================
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="Exit", command=Exit)
 menubar.add_cascade(label="File", menu=filemenu)
 root.config(menu=menubar)
 
-# ========================================INITIALIZATION===================================
+
 if __name__ == '__main__':
     root.mainloop()
 
