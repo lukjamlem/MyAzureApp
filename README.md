@@ -1,4 +1,3 @@
 
-"# MyAzureApp"
-
+# MyAzureApp
 # AzureApp
