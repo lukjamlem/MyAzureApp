@@ -30,7 +30,7 @@ DB_CONNECT_STRING = "mongodb://fanfanfan:HAjuKOgTPF9vqlzBwcE4T5oaW9JACsCfgUdxbnL
 def load_config():
     dir_root = os.path.dirname(os.path.abspath(__file__))
     with open(dir_root + "/config.yaml", "r") as yamlfile:
-        return yaml.load((yamlfile, Loader=yaml.FullLoader))
+        return yaml.load((yamlfile, yaml.Loader=yaml.FullLoader))
 
 
 def get_files(dir):
