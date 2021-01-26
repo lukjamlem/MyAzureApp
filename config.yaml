@@ -1,0 +1,4 @@
+azure_storage_conectionstring: "DefaultEndpointsProtocol=https;AccountName=samplesample;AccountKey=Ntje4rTknNiUtwAAKWRzxvKgjjHk4oav1iEEm+duR5XqFjILbRerw6E//6F7b9Dc29BKWPpK/N8mf/E5zVEKxQ==;EndpointSuffix=core.windows.net"
+video_container_name: "samplecontainer"
+pictures_container_name: "samplesecondcontrainer"
+source_folder: "C:\Users\terputer\Desktop\filmy"

@@ -1,6 +1,10 @@
 from tkinter import *
 import tkinter.messagebox as tkMessageBox
 import sqlite3
+import os
+import yaml
+from azure.storage.blob import ContainerClient
+
 
 root = Tk()
 root.title("Aplikacja do rejestrowania i logowania")
@@ -19,9 +23,23 @@ USERNAME = StringVar()
 PASSWORD = StringVar()
 FIRSTNAME = StringVar()
 LASTNAME = StringVar()
+DB_CONNECT_STRING = "mongodb://fanfanfan:HAjuKOgTPF9vqlzBwcE4T5oaW9JACsCfgUdxbnL9TBSwzVV9VKeCS7UV9WEGBsdjYCL14SwKUBVazBWB9P0oOA==@fanfanfan.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@fanfanfan@"
 
 
 # funkcje
+def load_config():
+    dir_root = os.path.dirname(os.path.abspath(__file__))
+    with open(dir_root + "/config.yaml", "r") as yamlfile:
+        return yaml.load((yamlfile, Loader=yaml.FullLoader))
+
+
+def get_files(dir):
+    with os.scandir(dir) as entries:
+        for entry in entries:
+            if entry.is_file() and not entry.name.startswith('.'):
+                yield entry
+
+
 def Database():
     global conn, cursor
     conn = sqlite3.connect("db_member.db")
@@ -41,7 +59,6 @@ def LoginForm():
     global LoginFrame, lbl_result1
     LoginFrame = Frame(root)
     LoginFrame.pack(side=TOP, pady=80)
-    lbl_username = Label(LoginFrame, text="Username:", font=('arial', 25), bd=18)
     lbl_username.grid(row=1)
     lbl_password = Label(LoginFrame, text="Password:", font=('arial', 25), bd=18)
     lbl_password.grid(row=2)
@@ -130,11 +147,30 @@ def Login():
         else:
             lbl_result1.config(text="Invalid Username or password", fg="red")
 
+def upload(files, connection_string, connection_name):
+    container_client = ContainerClient.from_connection_string(connection_string, container_name)
+    print("Uploding files to bloob storage")
+
+    for file in files:
+        blob_client = container_client.get_blob_client(file.name)
+        with open(file.path, "rb") as data:
+            blob_client.upload_blob(data)
+            print(f'{file.name} uploaded to blob storage')
+            os.remove(file)
+            print(f'{file.name} removed from folder')
+
 
 LoginForm()
 
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
+
+config = load_config()
+videos = get_files(config["source_folder"] + "/videos")
+pictures = get_files(config["source_folder"] + "/pictures")
+upload(videos, config["azure_storage_conectionstring"], config["video_container_name"])
+upload(pictures, config["azure_storage_conectionstring"], config["pictures_container_name"])
+
 filemenu.add_command(label="Exit", command=Exit)
 menubar.add_cascade(label="File", menu=filemenu)
 root.config(menu=menubar)
